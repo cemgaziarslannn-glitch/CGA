@@ -40,13 +40,13 @@ header button {background:#e67e22; color:#fff;}
 <header>
   <h1>STABIL ADMIN PANELİ</h1>
   <div>
-    <!-- NOKTA EKLE Butonu eklendi -->
+  <button id="depoBtn" style="background:#16a085; color:#fff;">DEPO</button> <!-- Yeni Buton -->
     <button id="noktaBtn" style="background:#8e44ad; color:#fff; margin-right:10px;">NOKTA EKLE</button>
-
     <button id="devriyeBtn" style="background:#2980b9; color:#fff; margin-right:10px;">DEVRIYE EKLE</button>
-    <button id="logoutBtn">ÇIKIŞ</button>
+    <button id="logoutBtn" style="margin-right:10px;">ÇIKIŞ</button>
   </div>
 </header>
+
 
 <div class="panel">
 <h2>YENİ KULLANICI OLUŞTUR</h2>
@@ -433,6 +433,10 @@ document.getElementById('searchBtn').addEventListener('click', ()=>{
     attachRowEvents();
   }
 });
+document.getElementById('depoBtn').addEventListener('click', () => {
+  window.location.href = 'panel.html';
+});
+
 </script>
 </body>
 </html>
