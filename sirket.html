@@ -7,174 +7,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== GENEL ===== */
-body {
-  margin:0;
-  font-family:'Montserrat', sans-serif;
-  background: linear-gradient(135deg,#0a1118,#1c1f26);
-  color:#ecf0f1;
-  overflow-x:hidden;
-}
-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px 30px;
-  background:#1b2838;
-  box-shadow:0 10px 30px rgba(0,0,0,0.6);
-  position:relative;
-  border-bottom:2px solid #ffcc00;
-  flex-wrap:wrap;
-}
-header h1 {
-  font-size:1.8rem;
-  color:#ffcc00;
-  margin:0;
-  text-shadow:2px 2px 6px rgba(0,0,0,0.7);
-  letter-spacing:1px;
-}
+body {margin:0; font-family:'Montserrat', sans-serif; background: linear-gradient(135deg,#0a1118,#1c1f26); color:#ecf0f1; overflow-x:hidden;}
+header {display:flex; justify-content:space-between; align-items:center; padding:20px 30px; background:#1b2838; box-shadow:0 10px 30px rgba(0,0,0,0.6); border-bottom:2px solid #ffcc00;}
+header h1 {font-size:1.9rem; color:#ffcc00; margin:0; text-shadow:2px 2px 6px rgba(0,0,0,0.7); letter-spacing:1px;}
+.container {max-width:1000px; margin:40px auto; padding:20px;}
+.panel {background: rgba(255,255,255,0.08); padding:30px; border-radius:25px; box-shadow:0 12px 35px rgba(0,0,0,0.6); margin-top:20px; position:relative; transition: transform 0.3s ease, box-shadow 0.3s ease; backdrop-filter: blur(4px);}
+.panel:hover {transform: translateY(-4px); box-shadow:0 18px 50px rgba(0,0,0,0.8);}
+.panel h3 {text-align:center; margin-bottom:20px; font-weight:700; font-size:1.7rem; color:#ffd700; text-shadow:1px 1px 4px rgba(0,0,0,0.6);}
+.status {margin-top:10px; padding:20px; background: rgba(0,0,0,0.15); border-radius:15px; font-size:15px; line-height:1.5; min-height:80px; transition: all 0.3s ease;}
+.status div {display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; background: rgba(0,0,0,0.25); border-radius:12px; transition: transform 0.3s ease, background 0.3s ease; flex-wrap:wrap;}
+.status div:hover { transform: scale(1.02); background: rgba(0,0,0,0.35); }
+.status div span {flex:1 1 auto;}
+.status div button {margin-left:auto; padding:5px 10px; border-radius:8px; border:none; cursor:pointer; font-size:13px; background:#3498db; color:#fff; transition:0.3s ease;}
+.status div button:hover { background:#2980b9; transform:scale(1.05); }
 
-.container {
-  max-width:1000px;
-  margin:40px auto;
-  padding:20px;
-}
-
-.panel {
-  background: rgba(255,255,255,0.08);
-  padding:30px;
-  border-radius:25px;
-  box-shadow:0 12px 35px rgba(0,0,0,0.6);
-  margin-top:20px;
-  position:relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(4px);
-}
-.panel:hover {
-  transform: translateY(-4px);
-  box-shadow:0 18px 50px rgba(0,0,0,0.8);
-}
-.panel h3 {
-  text-align:center;
-  margin-bottom:20px;
-  font-weight:700;
-  font-size:1.7rem;
-  color:#ffd700;
-  text-shadow:1px 1px 4px rgba(0,0,0,0.6);
-}
-
-.status {
-  margin-top:10px;
-  padding:20px;
-  background: rgba(0,0,0,0.15);
-  border-radius:15px;
-  font-size:15px;
-  line-height:1.5;
-  min-height:80px;
-  transition: all 0.3s ease;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.status div {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  transition: transform 0.3s ease, background 0.3s ease;
-  flex-wrap:wrap;
-}
-.status div:hover { 
-  transform: scale(1.02); 
-  background: rgba(0,0,0,0.25); 
-}
-.status button {
-  background:#3498db; 
-  color:#fff; 
-  padding:4px 10px; 
-  border:none; 
-  border-radius:8px; 
-  cursor:pointer; 
-  font-size:13px; 
-  transition:0.3s ease;
-}
-.status button:hover { background:#2980b9; transform:scale(1.05); }
-
-.action-btn {
-  padding:15px 25px; 
-  font-size:1.1rem; 
-  font-weight:700; 
-  border:none; 
-  border-radius:25px; 
-  cursor:pointer; 
-  margin:10px; 
-  transition: all 0.3s ease; 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-  flex:1 1 150px;
-  min-width:120px;
-}
+.action-btn {padding:18px 45px; font-size:1.25rem; font-weight:700; border:none; border-radius:25px; cursor:pointer; margin:10px; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(0,0,0,0.5);}
 .action-btn.green { background:linear-gradient(135deg,#2ecc71,#27ae60); color:#fff; }
 .action-btn.yellow { background:linear-gradient(135deg,#f1c40f,#f39c12); color:#000; }
 .action-btn.red { background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; }
-.action-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow:0 12px 30px rgba(0,0,0,0.7); }
+.action-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow:0 12px 30px rgba(0,0,0,0.7);}
+#statusBtn { background:#3498db;color:#fff; }
 
-.top-right-actions {
-  position: fixed;
-  top: 15px;
-  right: 25px;
-  display:flex;
-  align-items:center;
-  gap:15px;
-  z-index:1000;
-  flex-wrap:wrap;
-}
-
-#profileIcon {
-  position: relative;
-  background: linear-gradient(135deg,#2ecc71,#27ae60);
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  cursor:pointer;
-  z-index:10;
-  box-shadow:0 8px 25px rgba(0,0,0,0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-#profileIcon:hover { transform: scale(1.1); box-shadow:0 12px 30px rgba(0,0,0,0.8); }
-
-#logoutBtn {
-  padding: 12px 18px; 
-  background:linear-gradient(135deg,#e74c3c,#c0392b); 
-  color:#fff; 
-  border:none; 
-  border-radius:15px; 
-  font-weight:700; 
-  font-size:14px; 
-  cursor:pointer; 
-  box-shadow:0 8px 25px rgba(0,0,0,0.6); 
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-#logoutBtn:hover { transform: translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,0.8); }
-
-/* PROFİL MODAL */
 #profileModal, #statusModal {
-  display:none; 
-  position:fixed; 
-  top:50%; 
-  left:50%; 
-  transform: translate(-50%,-50%); 
-  background: rgba(18,18,18,0.98); 
-  padding:30px; 
-  border-radius:25px; 
-  box-shadow:0 15px 50px rgba(0,0,0,0.8); 
-  z-index:9999; 
-  width:90%; 
-  max-width:450px; 
-  max-height:90%; 
-  overflow:auto;
+  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background: rgba(18,18,18,0.98); padding:30px; border-radius:25px; box-shadow:0 15px 50px rgba(0,0,0,0.8); z-index:9999;
+  width:90%; max-width:450px; max-height:90%; overflow:auto; animation: fadeIn 0.4s ease forwards;
 }
+@keyframes fadeIn { from {opacity:0; transform:translate(-50%,-48%);} to {opacity:1; transform:translate(-50%,-50%);} }
 #profileModal h3, #statusModal h3 {text-align:center; margin-bottom:20px; font-size:1.8rem; color:#ffd700; text-shadow:1px 1px 3px rgba(0,0,0,0.7);}
 #profileModal label { display:block; margin-top:15px; font-size:14px; text-transform: uppercase; color:#ccc; }
 #profileModal input { width:100%; padding:12px; border-radius:15px; border:none; outline:none; margin-top:5px; background:#222f3e; color:#fff; transition:0.3s ease;}
@@ -186,26 +45,39 @@ header h1 {
 #profileClose:hover { color:#ffcc00; transform:scale(1.2); }
 .togglePassword { position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:16px; user-select:none;}
 
+/* TOP-RIGHT ACTIONS */
+.top-right-actions {
+  position: fixed;
+  top: 15px;
+  right: 25px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  z-index:1000;
+  flex-wrap:nowrap;
+}
+#profileIcon { position: relative; background: linear-gradient(135deg,#2ecc71,#27ae60); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; box-shadow:0 8px 25px rgba(0,0,0,0.6); transition: transform 0.3s ease, box-shadow 0.3s ease;}
+#profileIcon:hover { transform: scale(1.1); box-shadow:0 12px 30px rgba(0,0,0,0.8); }
+#logoutBtn { padding: 12px 18px; background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; border:none; border-radius:15px; font-weight:700; font-size:14px; cursor:pointer; box-shadow:0 8px 25px rgba(0,0,0,0.6); transition: transform 0.3s ease, box-shadow 0.3s ease;}
+#logoutBtn:hover { transform: translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,0.8); }
+
 /* ===== TABLO ===== */
-#statusTable { width:100%; border-collapse: collapse; margin-top:20px; font-size:14px;}
-#statusTable th, #statusTable td { border:1px solid rgba(255,255,255,0.3); padding:8px; text-align:center; word-break:break-word; }
+#statusTable { width:100%; border-collapse: collapse; margin-top:20px; }
+#statusTable th, #statusTable td { border:1px solid rgba(255,255,255,0.3); padding:10px; text-align:center; }
 #statusTable th { background: rgba(255,255,255,0.1); color:#ffd700; }
 .bestUser { background: rgba(46,204,113,0.3); font-weight:700; }
 .worstUser { background: rgba(231,76,60,0.3); font-weight:700; }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width:768px) {
-  header { flex-direction:column; align-items:flex-start; gap:10px; }
-  .top-right-actions { top:auto; bottom:15px; right:25px; flex-direction:row; }
-  .action-btn { flex:1 1 100%; font-size:1rem; padding:12px 20px; }
-  .status div { flex-direction:column; align-items:flex-start; gap:5px; }
-  #statusTable th, #statusTable td { font-size:12px; padding:6px; }
-}
-@media (max-width:480px) {
-  header h1 { font-size:1.5rem; }
-  .action-btn { font-size:0.95rem; padding:10px 15px; }
-  #profileIcon { width:45px; height:45px; font-size:22px; }
-  #logoutBtn { font-size:12px; padding:10px 12px; }
+body, div, span, p, h1, h2, h3, h4, h5, h6, label, input, button, table, th, td { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+
+/* ===== MOBİL ===== */
+@media(max-width:600px){
+  .container {margin:20px 15px; padding:15px;}
+  .panel {padding:20px;}
+  .action-btn {padding:14px 25px; font-size:1rem; margin:5px;}
+  .status div {flex-direction:column; align-items:flex-start;}
+  .status div button {margin-left:0; margin-top:5px;}
+  #top-right-actions {gap:8px;}
 }
 </style>
 </head>
@@ -230,7 +102,7 @@ header h1 {
     <button class="action-btn green" onclick="window.location.href='olaylar.html'">Olay Takip</button>
     <button class="action-btn yellow" onclick="window.location.href='tamam.html'">Nöbet Takip</button>
     <button class="action-btn red" onclick="window.location.href='takip.html'">Devriye Takip</button>
-    <button class="action-btn" style="background:#3498db;color:#fff;" id="statusBtn">Durum Tablosu</button>
+    <button class="action-btn" id="statusBtn">Durum Tablosu</button>
   </div>
 </div>
 
@@ -257,7 +129,7 @@ header h1 {
 <!-- DURUM TABLO MODAL -->
 <div id="statusModal">
   <h3>Güvenlik Devriye Durumları</h3>
-  <p style="text-align:center; margin-bottom:15px; font-size:14px; color:#fff;">⭐İyi Devriye Atan     ❌Kötü Devriye Atan </p>
+  <p style="text-align:center; margin-bottom:15px; font-size:14px; color:#fff;">⭐ En İyi Devriye Atan     ❌ En Kötü Devriye Atan </p>
   <table id="statusTable">
     <thead>
       <tr>
@@ -354,15 +226,10 @@ onValue(ref(db,'nobetRecords'), async snapshot => {
         if(!userSnap.exists()) continue;
         const phone = userSnap.val()?.phone || '';
         const div = document.createElement('div'); 
-        div.style.padding='10px'; 
-        div.style.background='rgba(0,0,0,0.25)'; 
-        div.style.borderRadius='12px';
-        div.style.display='flex';
-        div.style.alignItems='center';
-        div.style.justifyContent='space-between';
-        div.style.flexWrap='wrap';
-        div.innerHTML=`🟢 ${record.startBy} Nöbette | ${record.shift} Vardiyası | ${record.startPoint} 
-        <button onclick="window.location.href='tel:${phone}'">📞Ara</button>`;
+        div.innerHTML=`
+          <span>🟢 ${record.startBy} Nöbette | ${record.shift} Vardiyası | ${record.startPoint}</span>
+          <button onclick="window.location.href='tel:${phone}'">📞Ara</button>
+        `;
         securityStatus.appendChild(div);
     }
 });
