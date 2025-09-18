@@ -199,20 +199,23 @@ async function loginUser(username, password, role){
 
     sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
 
-    if(role === "security"){
-      if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("securityUser");
+  if(role === "security"){
+  if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
+  else localStorage.removeItem("securityUser");
 
-      if(user.type === "security") window.location.href="guvenlik.html";
-      else if(user.type === "admin") window.location.href="yetkili.html";
-      else msg.textContent="Yetki hatalı!";
-    }
-    else if(role==="resident"){
-      if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("residentUser");
-      if(user.type==="resident") window.location.href="site.html";
-      else msg.textContent="Yetki hatalı!";
-    }
+  if(user.type === "company"){
+    // Şirket kullanıcıları
+    window.location.href = "sirket.html";
+  } else if(user.type === "security"){
+    // Normal güvenlik kullanıcıları
+    window.location.href = "guvenlik.html";
+  } else if(user.type === "admin"){
+    window.location.href = "yetkili.html";
+  } else {
+    msg.textContent="Yetki hatalı!";
+  }
+}
+
 
   } catch(err){
     console.error(err);
