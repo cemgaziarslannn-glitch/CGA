@@ -7,149 +7,49 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b1a27">
-
 <style>
   body {
-    margin:0;
-    font-family:'Montserrat',sans-serif;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    margin:0; font-family:'Montserrat',sans-serif; height:100vh; 
+    display:flex; justify-content:center; align-items:center; 
     background: linear-gradient(135deg,#0b1a27,#1a2b3f);
   }
   .container {
-    width: 380px;
-    padding: 50px 30px;
-    border-radius: 25px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-    text-align: center;
+    width: 380px; padding: 50px 30px; border-radius: 25px; 
+    background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; 
     transition: all 0.3s ease;
   }
-  h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #f1c40f;
-    text-shadow: 0 0 10px rgba(241,196,15,0.7);
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  h2 {
-    font-size: 18px;
-    color: #ecf0f1;
-    margin-bottom: 30px;
-  }
-  .role-buttons {
-    display:flex;
-    justify-content: space-between;
-    margin-bottom:25px;
-  }
-  .role-buttons button {
-    width:48%;
-    padding:12px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    font-weight:600;
-    color:white;
-    background: linear-gradient(90deg,#34495e,#2c3e50);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: 0.3s;
-  }
-  .role-buttons button.active {
-    background: linear-gradient(90deg,#27ae60,#2ecc71);
-    box-shadow:0 6px 20px rgba(39,174,96,0.5);
-  }
-  .input-group {
-    display:none;
-    flex-direction:column;
-    text-align:left;
-    animation:fadeIn 0.4s;
-  }
-  .input-group.active {
-    display:flex;
-  }
-  input[type="text"], input[type="password"] {
-    width:100%;
-    padding:12px;
-    margin:8px 0;
-    border-radius:12px;
-    border:none;
-    background: rgba(255,255,255,0.1);
-    color:white;
-    font-size: 14px;
-  }
+  h1 { font-size: 32px; font-weight: 700; color: #f1c40f; text-shadow: 0 0 10px rgba(241,196,15,0.7); margin-bottom: 10px; cursor: pointer;}
+  h2 { font-size: 18px; color: #ecf0f1; margin-bottom: 30px; }
+  .role-buttons { display:flex; justify-content: space-between; margin-bottom:25px;}
+  .role-buttons button {width:48%; padding:12px; border:none; border-radius:15px; cursor:pointer; font-weight:600; color:white; background: linear-gradient(90deg,#34495e,#2c3e50); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;}
+  .role-buttons button.active { background: linear-gradient(90deg,#27ae60,#2ecc71); box-shadow:0 6px 20px rgba(39,174,96,0.5);}
+  .input-group { display:none; flex-direction:column; text-align:left; animation:fadeIn 0.4s; }
+  .input-group.active { display:flex; }
+  input[type="text"], input[type="password"] {width:100%; padding:12px; margin:8px 0; border-radius:12px; border:none; background: rgba(255,255,255,0.1); color:white; font-size: 14px;}
   input::placeholder { color: rgba(236,240,241,0.6); }
-  .remember { display:flex; align-items:center; gap:8px; font-size:14px; margin-top:8px; }
+  .remember {display:flex; align-items:center; gap:8px; font-size: 14px; margin-top:8px;}
   .remember input[type="checkbox"] { margin:0; cursor:pointer; }
-  .remember label { margin:0; cursor:pointer; color:white; }
-  .loginBtn {
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:15px;
-    background: linear-gradient(90deg,#27ae60,#2ecc71);
-    color:white;
-    font-weight:600;
-    font-size:16px;
-    cursor:pointer;
-    box-shadow:0 5px 15px rgba(0,0,0,0.3);
-    transition:0.3s;
-  }
-  .loginBtn:hover {
-    background: linear-gradient(90deg,#2ecc71,#27ae60);
-    transform:translateY(-2px);
-  }
-  .message {
-    margin-top:15px;
-    color:#e74c3c;
-    font-weight:600;
-    text-align:center;
-    min-height:20px;
-  }
-  .modal {
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.8);
-    align-items:center;
-    justify-content:center;
-  }
-  .modal-content {
-    background:#2c3e50;
-    padding:25px;
-    border-radius:20px;
-    width:320px;
-    text-align:center;
-  }
-  @keyframes fadeIn {
-    from {opacity:0; transform:translateY(10px);}
-    to {opacity:1; transform:translateY(0);}
-  }
-
-  /* Sabit indirme butonu */
+  .remember label { margin:0; cursor:pointer; color: #ffffff; }
+  .loginBtn {width:100%; padding:12px; margin-top:15px; border:none; border-radius:15px; background: linear-gradient(90deg,#27ae60,#2ecc71); color:white; font-weight:600; font-size:16px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.3); transition:0.3s;}
+  .loginBtn:hover { background: linear-gradient(90deg,#2ecc71,#27ae60); transform:translateY(-2px); }
+  .message { margin-top:15px; color:#e74c3c; font-weight:600; text-align:center; min-height:20px; }
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); align-items:center; justify-content:center; }
+  .modal-content { background:#2c3e50; padding:25px; border-radius:20px; width:320px; text-align:center; }
+  @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
   #addBtn {
-    position:fixed;
-    top:20px;
-    right:20px;
-    padding:10px 15px;
-    font-size:16px;
-    z-index:1000;
-    cursor:pointer;
-    background:#27ae60;
-    color:white;
-    border:none;
-    border-radius:10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  #addBtn:hover {
-    background:#2ecc71;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+    padding: 12px 20px;
+    border-radius: 15px;
+    background: linear-gradient(90deg,#27ae60,#2ecc71);
+    color: white;
+    font-weight:600;
+    border: none;
+    cursor: pointer;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
   }
 </style>
 </head>
@@ -203,6 +103,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAUjb4CBSZxjCTxpx8S_rGLOLDeRtDTs7U",
   authDomain: "bencga-db51b.firebaseapp.com",
@@ -216,7 +117,35 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Elementler
+// Buton ve deferredPrompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+const addBtn = document.getElementById('addBtn');
+addBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('Kullanıcı seçimi:', outcome);
+    deferredPrompt = null;
+  } else {
+    alert("Cihazınız PWA yüklemeyi desteklemiyor veya tarayıcı kriterleri sağlanmadı.");
+  }
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker kayıt oldu', reg))
+      .catch(err => console.log('Service Worker kayıt hatası', err));
+  });
+}
+
+// Sekme geçişleri
 const securityBtn = document.getElementById("securityBtn");
 const residentBtn = document.getElementById("residentBtn");
 const securityGroup = document.getElementById("securityGroup");
@@ -238,155 +167,51 @@ const adminPassword = document.getElementById("adminPassword");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const closeAdminBtn = document.getElementById("closeAdminBtn");
 
-// Sekme geçişleri
-securityBtn.addEventListener("click", ()=>{
-  securityBtn.classList.add("active");
-  residentBtn.classList.remove("active");
-  securityGroup.classList.add("active");
-  residentGroup.classList.remove("active");
-  msg.textContent="";
-});
-residentBtn.addEventListener("click", ()=>{
-  residentBtn.classList.add("active");
-  securityBtn.classList.remove("active");
-  residentGroup.classList.add("active");
-  securityGroup.classList.remove("active");
-  msg.textContent="";
-});
+securityBtn.addEventListener("click", ()=>{securityBtn.classList.add("active"); residentBtn.classList.remove("active"); securityGroup.classList.add("active"); residentGroup.classList.remove("active"); msg.textContent="";});
+residentBtn.addEventListener("click", ()=>{residentBtn.classList.add("active"); securityBtn.classList.remove("active"); residentGroup.classList.add("active"); securityGroup.classList.remove("active"); msg.textContent="";});
 
-// 10 tık ile admin modal aç
+// Admin modal
 let cgaClickCount=0;
-cgaTitle.addEventListener("click", ()=>{
-  cgaClickCount++;
-  if(cgaClickCount>=10){
-    adminModal.style.display="flex";
-    cgaClickCount=0;
-  }
-});
+cgaTitle.addEventListener("click", ()=>{cgaClickCount++; if(cgaClickCount>=10){ adminModal.style.display="flex"; cgaClickCount=0;}});
 closeAdminBtn.addEventListener("click", ()=>adminModal.style.display="none");
 
-// Hatırlanan kullanıcıları doldur
+// Inputları hatırlama ve büyük harf
 window.addEventListener("load", ()=>{
   residentBtn.click();
   const secStored = JSON.parse(localStorage.getItem("securityUser"));
-  if(secStored){
-    secUsername.value = secStored.username;
-    secPassword.value = secStored.password;
-    secRemember.checked = true;
-  }
+  if(secStored){ secUsername.value = secStored.username; secPassword.value = secStored.password; secRemember.checked = true; }
   const resStored = JSON.parse(localStorage.getItem("residentUser"));
-  if(resStored){
-    resUsername.value = resStored.username;
-    resPassword.value = resStored.password;
-    resRemember.checked = true;
-  }
+  if(resStored){ resUsername.value = resStored.username; resPassword.value = resStored.password; resRemember.checked = true; }
 });
+[secUsername, secPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
+[resUsername, resPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
 
-// Büyük harfe çevir
-[secUsername, secPassword].forEach(el=>{
-  el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
-});
-[resUsername, resPassword].forEach(el=>{
-  el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
-});
-
-// **Sabit indirme butonu**
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e)=>{
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-document.getElementById('addBtn').addEventListener('click', async ()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
-    console.log('Kullanıcı seçimi:', choice.outcome);
-    deferredPrompt = null;
-  } else {
-    alert("Bu cihaz PWA yüklemeyi desteklemiyor veya zaten yüklü.");
-  }
-});
-
-// Login fonksiyonu
+// Login (firebase)
 async function loginUser(username, password, role){
-  username=username.trim();
-  password=password.trim();
-  msg.textContent="";
-
-  if(!username || !password){
-    msg.textContent="Kullanıcı adı ve şifre gerekli!";
-    return;
-  }
-
-  try {
-    const adminSnap = await get(child(ref(db), 'admin'));
-    if(adminSnap.exists()){
-      const adminUser = adminSnap.val();
-      if(username === adminUser.username && password === adminUser.password){
-        sessionStorage.setItem("currentUser", JSON.stringify({username,type:"admin"}));
-        window.location.href = "mod.html";
-        return;
-      }
-    }
-
-    const userSnap = await get(child(ref(db), 'users/' + username));
-    if(!userSnap.exists()){
-      msg.textContent="Kullanıcı bulunamadı!";
-      return;
-    }
-    const user = userSnap.val();
-    if(user.password !== password){
-      msg.textContent="Şifre hatalı!";
-      return;
-    }
-
-    sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
-
+  username=username.trim(); password=password.trim(); msg.textContent="";
+  if(!username || !password){ msg.textContent="Kullanıcı adı ve şifre gerekli!"; return; }
+  try{
+    const adminSnap = await get(child(ref(db),'admin'));
+    if(adminSnap.exists()){ const adminUser=adminSnap.val(); if(username===adminUser.username && password===adminUser.password){ sessionStorage.setItem("currentUser",JSON.stringify({username,type:"admin"})); window.location.href="mod.html"; return; } }
+    const userSnap = await get(child(ref(db),'users/'+username));
+    if(!userSnap.exists()){ msg.textContent="Kullanıcı bulunamadı!"; return; }
+    const user=userSnap.val();
+    if(user.password!==password){ msg.textContent="Şifre hatalı!"; return; }
+    sessionStorage.setItem("currentUser",JSON.stringify({username:user.username,type:user.type}));
     if(role==="security"){
-      if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("securityUser");
-
-      if(user.type==="company") window.location.href="sirket.html";
-      else if(user.type==="security") window.location.href="guvenlik.html";
-      else if(user.type==="admin") window.location.href="yetkili.html";
-      else msg.textContent="Yetki hatalı!";
+      if(secRemember.checked) localStorage.setItem("securityUser",JSON.stringify({username,password})); else localStorage.removeItem("securityUser");
+      if(user.type==="company"){ window.location.href="sirket.html"; } else if(user.type==="security"){ window.location.href="guvenlik.html"; } else if(user.type==="admin"){ window.location.href="yetkili.html"; } else{ msg.textContent="Yetki hatalı!"; }
     }
-
     if(role==="resident"){
-      if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("residentUser");
-
-      if(user.type==="resident") window.location.href="site.html";
-      else msg.textContent="Yetki hatalı!";
+      if(resRemember.checked) localStorage.setItem("residentUser",JSON.stringify({username,password})); else localStorage.removeItem("residentUser");
+      if(user.type==="resident"){ window.location.href="site.html"; } else{ msg.textContent="Yetki hatalı!"; }
     }
-
-  } catch(err){
-    console.error(err);
-    msg.textContent="Bağlantı hatası!";
-  }
+  } catch(err){ console.error(err); msg.textContent="Bağlantı hatası!"; }
 }
 
-// Login butonları
-document.getElementById("secLoginBtn").addEventListener("click", ()=>{
-  loginUser(secUsername.value, secPassword.value, "security");
-});
-document.getElementById("resLoginBtn").addEventListener("click", ()=>{
-  loginUser(resUsername.value, resPassword.value, "resident");
-});
-adminLoginBtn.addEventListener("click", ()=>{
-  loginUser(adminUsername.value, adminPassword.value, "admin");
-});
-
-// Service Worker
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg=>console.log('Service Worker kayıt oldu', reg))
-      .catch(err=>console.log('Service Worker kayıt hatası', err));
-  });
-}
+document.getElementById("secLoginBtn").addEventListener("click", ()=>{ loginUser(secUsername.value, secPassword.value, "security"); });
+document.getElementById("resLoginBtn").addEventListener("click", ()=>{ loginUser(resUsername.value, resPassword.value, "resident"); });
+adminLoginBtn.addEventListener("click", ()=>{ loginUser(adminUsername.value, adminPassword.value, "admin"); });
 </script>
-
 </body>
 </html>
