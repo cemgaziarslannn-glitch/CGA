@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CGA Güvenlik Sistemleri - Giriş Paneli</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1a27">
+
 <style>
   body {margin:0; font-family:'Montserrat',sans-serif; height:100vh; display:flex; justify-content:center; align-items:center; background: linear-gradient(135deg,#0b1a27,#1a2b3f);}
   .container {width: 380px; padding: 50px 30px; border-radius: 25px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; transition: all 0.3s ease;}
@@ -71,6 +74,8 @@
     <button id="closeAdminBtn" style="background:#c0392b; margin-top:10px;">Kapat</button>
   </div>
 </div>
+<button id="addBtn" style="display:none;">Ana Ekrana Ekle</button>
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -161,6 +166,22 @@ window.addEventListener("load", ()=>{
 [resUsername, resPassword].forEach(el=>{
   el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
 });
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); // otomatik prompt engellenir
+  deferredPrompt = e;
+  document.getElementById('addBtn').style.display = 'block';
+});
+
+document.getElementById('addBtn').addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('Kullanıcı seçimi:', outcome);
+    deferredPrompt = null;
+    document.getElementById('addBtn').style.display = 'none';
+  }
+});
 
 // Login fonksiyonu
 async function loginUser(username, password, role){
@@ -246,6 +267,13 @@ document.getElementById("resLoginBtn").addEventListener("click", ()=>{
 adminLoginBtn.addEventListener("click", ()=>{
   loginUser(adminUsername.value, adminPassword.value, "admin");
 });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker kayıt oldu', reg))
+      .catch(err => console.log('Service Worker kayıt hatası', err));
+  });
+}
 </script>
 
 </body>
