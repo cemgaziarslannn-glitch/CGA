@@ -138,6 +138,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+if(!currentUser || (currentUser.type !== 'admin' && currentUser.type !== 'company')) { 
+  alert("Sadece admin veya company kullanıcı giriş yapabilir!"); 
+  window.location.href = "index.html";
+}
+
 
 const logContainer = document.getElementById('logContainer');
 const userFilter = document.getElementById('userFilter');
@@ -146,7 +152,14 @@ const dateTo = document.getElementById('dateTo');
 const applyFilter = document.getElementById('applyFilter');
 const backBtn = document.getElementById('backBtn');
 
-backBtn.addEventListener('click', ()=> window.location.href='yetkili.html');
+backBtn.addEventListener('click', ()=>{
+  if(currentUser.type === 'company'){
+    window.location.href = 'sirket.html';
+  } else {
+    window.location.href = 'yetkili.html';
+  }
+});
+
 
 let logs = [];
 
