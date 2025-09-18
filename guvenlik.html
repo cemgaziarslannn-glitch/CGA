@@ -655,11 +655,12 @@ function renderDevriyeHistory(){
     item.style.background='rgba(44,62,80,0.6)';
     item.style.borderRadius='10px';
     item.style.fontSize='14px';
-    item.innerHTML=`<strong>Tarih:</strong> ${d.displayDate}<br>
-                    <strong>Başlangıç:</strong> ${d.start}<br>
-                    <strong>Bitiş:</strong> ${d.end}<br>
-                    <strong>Durum:</strong> ${d.status}<br>
-                    <strong>Noktalar:</strong> ${Array.isArray(d.points)?d.points.join(', '):''}`;
+   item.innerHTML=`<strong>Tarih:</strong> ${d.displayDate}<br>
+                <strong>Blok:</strong> ${d.block || 'Bilinmiyor'}<br>
+                <strong>Başlangıç:</strong> ${d.start}<br>
+                <strong>Bitiş:</strong> ${d.end}<br>
+                <strong>Durum:</strong> ${d.status}<br>
+                <strong>Noktalar:</strong> ${Array.isArray(d.points)?d.points.join(', '):''}`;
     devriyeHistoryEl.appendChild(item);
   });
 }
@@ -775,9 +776,23 @@ async function finishDevriye(){
     const weekday = devriyeStartTime.toLocaleDateString('tr-TR',{ weekday:'long' });
     const dateText = `${devriyeStartTime.toLocaleDateString()} (${weekday.charAt(0).toUpperCase()+weekday.slice(1)})`;
 
+    // 🟢 Blok bilgisini ekle
+    let blockName = 'Bilinmiyor';
+    const nobetSnapshot = await get(nobetRecordsRef);
+    if(nobetSnapshot.exists()){
+        const records = nobetSnapshot.val();
+        for(const rec of Object.values(records)){
+            if(rec.startBy === (currentUser.name || currentUser.username) && rec.status==='started'){
+                blockName = rec.startPoint || 'Bilinmiyor';
+                break;
+            }
+        }
+    }
+
     const devriyeRecord = {
         user: currentUser.username || currentUser.name,
         name: currentUser.name || currentUser.username,
+        block: blockName, // 🔹 burası eklendi
         date: devriyeStartTime.toISOString().split('T')[0],
         displayDate: dateText,
         start: devriyeStartTime.toLocaleTimeString(),
@@ -798,6 +813,7 @@ async function finishDevriye(){
         btn.classList.remove('read'); 
         btn.nextElementSibling.innerText=btn.dataset.point;
     });
+
 }
 
 // Modal gösterme fonksiyonu
