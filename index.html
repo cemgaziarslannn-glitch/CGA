@@ -11,8 +11,25 @@
 <meta name="theme-color" content="#0b1a27">
 
 <style>
-  body {margin:0; font-family:'Montserrat',sans-serif; height:100vh; display:flex; justify-content:center; align-items:center; background: linear-gradient(135deg,#0b1a27,#1a2b3f);}
-  .container {width: 380px; padding: 50px 30px; border-radius: 25px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; transition: all 0.3s ease;}
+  body {
+    margin:0; 
+    font-family:'Montserrat',sans-serif; 
+    height:100vh; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    background: linear-gradient(135deg,#0b1a27,#1a2b3f);
+  }
+  .container {
+    width: 380px; 
+    padding: 50px 30px; 
+    border-radius: 25px; 
+    background: rgba(255,255,255,0.05); 
+    backdrop-filter: blur(20px); 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6); 
+    text-align: center; 
+    transition: all 0.3s ease;
+  }
   h1 {font-size: 32px; font-weight: 700; color: #f1c40f; text-shadow: 0 0 10px rgba(241,196,15,0.7); margin-bottom: 10px; cursor: pointer;}
   h2 { font-size: 18px; color: #ecf0f1; margin-bottom: 30px; }
   .role-buttons {display:flex; justify-content: space-between; margin-bottom:25px;}
@@ -32,13 +49,25 @@
   .modal-content { background:#2c3e50; padding:25px; border-radius:20px; width:320px; text-align:center; }
   @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-  /* Ana ekrana ekle butonu */
-  #installBtn { position: fixed; top:10px; right:10px; padding:10px 15px; background:#27ae60; color:white; border:none; border-radius:12px; cursor:pointer; z-index:999; font-weight:600; display:none; }
+  /* Ana ekrana ekle butonu sabit ve her zaman görünür */
+  #installBtn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 12px 18px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    z-index: 999;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
 
-<!-- Sağ üst köşe Ana Ekrana Ekle Butonu -->
+<!-- Ana Ekrana Ekle Butonu -->
 <button id="installBtn">📲 Ana Ekrana Ekle</button>
 
 <div class="container">
@@ -87,6 +116,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAUjb4CBSZxjCTxpx8S_rGLOLDeRtDTs7U",
   authDomain: "bencga-db51b.firebaseapp.com",
@@ -97,17 +127,17 @@ const firebaseConfig = {
   appId: "1:568702678520:web:82d3c6a98216990fa3d20d",
   measurementId: "G-703BGXWTFN"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// === PWA Install Button ===
+// === PWA Ana Ekrana Ekle ===
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
 window.addEventListener("beforeinstallprompt", (e)=>{
   e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display="block";
+  deferredPrompt = e; 
 });
 
 installBtn.addEventListener("click", async ()=>{
@@ -116,19 +146,19 @@ installBtn.addEventListener("click", async ()=>{
     const choice = await deferredPrompt.userChoice;
     console.log("Kullanıcı seçimi:", choice.outcome);
     deferredPrompt = null;
-    installBtn.style.display="none";
   } else {
     alert("Safari: Paylaş → Ana Ekrana Ekle\nAndroid Chrome: Menü → Ana Ekrana Ekle");
   }
 });
 
-// === Service Worker kaydı ===
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").then(reg=>console.log("SW registered", reg))
-  .catch(err=>console.log("SW registration failed", err));
+// === Service Worker ===
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js')
+    .then(reg=>console.log('SW registered', reg))
+    .catch(err=>console.log('SW registration failed', err));
 }
 
-// === Senin mevcut login kodun ===
+// === Login Kodun ===
 const securityBtn = document.getElementById("securityBtn");
 const residentBtn = document.getElementById("residentBtn");
 const securityGroup = document.getElementById("securityGroup");
@@ -194,7 +224,7 @@ window.addEventListener("load", ()=>{
   }
 });
 
-// **Güvenlik ve Site Sakini inputlarını otomatik büyük harfe çevir**
+// Inputları otomatik büyük harfe çevir
 [secUsername, secPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
 [resUsername, resPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
 
