@@ -36,8 +36,16 @@
     margin-bottom: 10px;
     cursor: pointer;
   }
-  h2 { font-size: 18px; color: #ecf0f1; margin-bottom: 30px; }
-  .role-buttons {display:flex; justify-content: space-between; margin-bottom:25px;}
+  h2 {
+    font-size: 18px;
+    color: #ecf0f1;
+    margin-bottom: 30px;
+  }
+  .role-buttons {
+    display:flex;
+    justify-content: space-between;
+    margin-bottom:25px;
+  }
   .role-buttons button {
     width:48%;
     padding:12px;
@@ -50,12 +58,19 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transition: 0.3s;
   }
-  .role-buttons button.active { 
-    background: linear-gradient(90deg,#27ae60,#2ecc71); 
+  .role-buttons button.active {
+    background: linear-gradient(90deg,#27ae60,#2ecc71);
     box-shadow:0 6px 20px rgba(39,174,96,0.5);
   }
-  .input-group { display:none; flex-direction:column; text-align:left; animation:fadeIn 0.4s; }
-  .input-group.active { display:flex; }
+  .input-group {
+    display:none;
+    flex-direction:column;
+    text-align:left;
+    animation:fadeIn 0.4s;
+  }
+  .input-group.active {
+    display:flex;
+  }
   input[type="text"], input[type="password"] {
     width:100%;
     padding:12px;
@@ -67,9 +82,9 @@
     font-size: 14px;
   }
   input::placeholder { color: rgba(236,240,241,0.6); }
-  .remember {display:flex; align-items:center; gap:8px; font-size: 14px; margin-top:8px;}
+  .remember { display:flex; align-items:center; gap:8px; font-size:14px; margin-top:8px; }
   .remember input[type="checkbox"] { margin:0; cursor:pointer; }
-  .remember label { margin:0; cursor:pointer; color: #ffffff; }
+  .remember label { margin:0; cursor:pointer; color:white; }
   .loginBtn {
     width:100%;
     padding:12px;
@@ -84,30 +99,57 @@
     box-shadow:0 5px 15px rgba(0,0,0,0.3);
     transition:0.3s;
   }
-  .loginBtn:hover { background: linear-gradient(90deg,#2ecc71,#27ae60); transform:translateY(-2px); }
-  .message { margin-top:15px; color:#e74c3c; font-weight:600; text-align:center; min-height:20px; }
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); align-items:center; justify-content:center; }
-  .modal-content { background:#2c3e50; padding:25px; border-radius:20px; width:320px; text-align:center; }
-  @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+  .loginBtn:hover {
+    background: linear-gradient(90deg,#2ecc71,#27ae60);
+    transform:translateY(-2px);
+  }
+  .message {
+    margin-top:15px;
+    color:#e74c3c;
+    font-weight:600;
+    text-align:center;
+    min-height:20px;
+  }
+  .modal {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.8);
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-content {
+    background:#2c3e50;
+    padding:25px;
+    border-radius:20px;
+    width:320px;
+    text-align:center;
+  }
+  @keyframes fadeIn {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
+  }
 
-  /* -------- Uygulamayı İndir Butonu -------- */
+  /* Sabit indirme butonu */
   #addBtn {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    padding: 10px 18px;
-    background: linear-gradient(90deg,#27ae60,#2ecc71);
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
+    position:fixed;
+    top:20px;
+    right:20px;
+    padding:10px 15px;
+    font-size:16px;
+    z-index:1000;
+    cursor:pointer;
+    background:#27ae60;
+    color:white;
+    border:none;
+    border-radius:10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    z-index: 999;
-    display: none;
   }
   #addBtn:hover {
-    background: linear-gradient(90deg,#2ecc71,#27ae60);
+    background:#2ecc71;
   }
 </style>
 </head>
@@ -174,6 +216,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Elementler
 const securityBtn = document.getElementById("securityBtn");
 const residentBtn = document.getElementById("residentBtn");
 const securityGroup = document.getElementById("securityGroup");
@@ -222,7 +265,7 @@ cgaTitle.addEventListener("click", ()=>{
 });
 closeAdminBtn.addEventListener("click", ()=>adminModal.style.display="none");
 
-// Sayfa yüklenince hatırlanan kullanıcıları doldur
+// Hatırlanan kullanıcıları doldur
 window.addEventListener("load", ()=>{
   residentBtn.click();
   const secStored = JSON.parse(localStorage.getItem("securityUser"));
@@ -239,7 +282,7 @@ window.addEventListener("load", ()=>{
   }
 });
 
-// Güvenlik ve Site Sakini inputlarını otomatik büyük harfe çevir
+// Büyük harfe çevir
 [secUsername, secPassword].forEach(el=>{
   el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
 });
@@ -247,28 +290,28 @@ window.addEventListener("load", ()=>{
   el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
 });
 
-// PWA: Uygulamayı İndir
+// **Sabit indirme butonu**
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
+window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById('addBtn').style.display = 'block';
 });
 
-document.getElementById('addBtn').addEventListener('click', async () => {
-  if (deferredPrompt) {
+document.getElementById('addBtn').addEventListener('click', async ()=>{
+  if(deferredPrompt){
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log('Kullanıcı seçimi:', outcome);
+    const choice = await deferredPrompt.userChoice;
+    console.log('Kullanıcı seçimi:', choice.outcome);
     deferredPrompt = null;
-    document.getElementById('addBtn').style.display = 'none';
+  } else {
+    alert("Bu cihaz PWA yüklemeyi desteklemiyor veya zaten yüklü.");
   }
 });
 
 // Login fonksiyonu
 async function loginUser(username, password, role){
-  username = username.trim();
-  password = password.trim();
+  username=username.trim();
+  password=password.trim();
   msg.textContent="";
 
   if(!username || !password){
@@ -281,7 +324,7 @@ async function loginUser(username, password, role){
     if(adminSnap.exists()){
       const adminUser = adminSnap.val();
       if(username === adminUser.username && password === adminUser.password){
-        sessionStorage.setItem("currentUser", JSON.stringify({username, type:"admin"}));
+        sessionStorage.setItem("currentUser", JSON.stringify({username,type:"admin"}));
         window.location.href = "mod.html";
         return;
       }
@@ -300,21 +343,21 @@ async function loginUser(username, password, role){
 
     sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
 
-    if(role === "security"){
+    if(role==="security"){
       if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
       else localStorage.removeItem("securityUser");
 
-      if(user.type === "company") window.location.href = "sirket.html";
-      else if(user.type === "security") window.location.href = "guvenlik.html";
-      else if(user.type === "admin") window.location.href = "yetkili.html";
+      if(user.type==="company") window.location.href="sirket.html";
+      else if(user.type==="security") window.location.href="guvenlik.html";
+      else if(user.type==="admin") window.location.href="yetkili.html";
       else msg.textContent="Yetki hatalı!";
     }
 
-    if(role === "resident"){
+    if(role==="resident"){
       if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
       else localStorage.removeItem("residentUser");
 
-      if(user.type === "resident") window.location.href = "site.html";
+      if(user.type==="resident") window.location.href="site.html";
       else msg.textContent="Yetki hatalı!";
     }
 
@@ -336,11 +379,11 @@ adminLoginBtn.addEventListener("click", ()=>{
 });
 
 // Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker kayıt oldu', reg))
-      .catch(err => console.log('Service Worker kayıt hatası', err));
+      .then(reg=>console.log('Service Worker kayıt oldu', reg))
+      .catch(err=>console.log('Service Worker kayıt hatası', err));
   });
 }
 </script>
