@@ -5,31 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CGA Güvenlik Sistemleri - Giriş Paneli</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-
-<!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b1a27">
-
 <style>
-  body {
-    margin:0; 
-    font-family:'Montserrat',sans-serif; 
-    height:100vh; 
-    display:flex; 
-    justify-content:center; 
-    align-items:center; 
-    background: linear-gradient(135deg,#0b1a27,#1a2b3f);
-  }
-  .container {
-    width: 380px; 
-    padding: 50px 30px; 
-    border-radius: 25px; 
-    background: rgba(255,255,255,0.05); 
-    backdrop-filter: blur(20px); 
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6); 
-    text-align: center; 
-    transition: all 0.3s ease;
-  }
+  body {margin:0; font-family:'Montserrat',sans-serif; height:100vh; display:flex; justify-content:center; align-items:center; background: linear-gradient(135deg,#0b1a27,#1a2b3f);}
+  .container {width: 380px; padding: 50px 30px; border-radius: 25px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; transition: all 0.3s ease;}
   h1 {font-size: 32px; font-weight: 700; color: #f1c40f; text-shadow: 0 0 10px rgba(241,196,15,0.7); margin-bottom: 10px; cursor: pointer;}
   h2 { font-size: 18px; color: #ecf0f1; margin-bottom: 30px; }
   .role-buttons {display:flex; justify-content: space-between; margin-bottom:25px;}
@@ -48,27 +26,9 @@
   .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); align-items:center; justify-content:center; }
   .modal-content { background:#2c3e50; padding:25px; border-radius:20px; width:320px; text-align:center; }
   @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-
-  /* Ana ekrana ekle butonu sabit ve her zaman görünür */
-  #installBtn {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 12px 18px;
-    background: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    z-index: 999;
-    font-weight: 600;
-  }
 </style>
 </head>
 <body>
-
-<!-- Ana Ekrana Ekle Butonu -->
-<button id="installBtn">📲 Ana Ekrana Ekle</button>
 
 <div class="container">
   <h1 id="cgaTitle">CGA Güvenlik Sistemleri</h1>
@@ -116,7 +76,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAUjb4CBSZxjCTxpx8S_rGLOLDeRtDTs7U",
   authDomain: "bencga-db51b.firebaseapp.com",
@@ -127,38 +86,9 @@ const firebaseConfig = {
   appId: "1:568702678520:web:82d3c6a98216990fa3d20d",
   measurementId: "G-703BGXWTFN"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// === PWA Ana Ekrana Ekle ===
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
-
-window.addEventListener("beforeinstallprompt", (e)=>{
-  e.preventDefault();
-  deferredPrompt = e; 
-});
-
-installBtn.addEventListener("click", async ()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
-    console.log("Kullanıcı seçimi:", choice.outcome);
-    deferredPrompt = null;
-  } else {
-    alert("Safari: Paylaş → Ana Ekrana Ekle\nAndroid Chrome: Menü → Ana Ekrana Ekle");
-  }
-});
-
-// === Service Worker ===
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js')
-    .then(reg=>console.log('SW registered', reg))
-    .catch(err=>console.log('SW registration failed', err));
-}
-
-// === Login Kodun ===
 const securityBtn = document.getElementById("securityBtn");
 const residentBtn = document.getElementById("residentBtn");
 const securityGroup = document.getElementById("securityGroup");
@@ -224,9 +154,13 @@ window.addEventListener("load", ()=>{
   }
 });
 
-// Inputları otomatik büyük harfe çevir
-[secUsername, secPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
-[resUsername, resPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
+// **Güvenlik ve Site Sakini inputlarını otomatik büyük harfe çevir**
+[secUsername, secPassword].forEach(el=>{
+  el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
+});
+[resUsername, resPassword].forEach(el=>{
+  el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); });
+});
 
 // Login fonksiyonu
 async function loginUser(username, password, role){
@@ -240,6 +174,7 @@ async function loginUser(username, password, role){
   }
 
   try {
+    // Admin login modal
     const adminSnap = await get(child(ref(db), 'admin'));
     if(adminSnap.exists()){
       const adminUser = adminSnap.val();
@@ -250,6 +185,7 @@ async function loginUser(username, password, role){
       }
     }
 
+    // Normal kullanıcı login
     const userSnap = await get(child(ref(db), 'users/' + username));
     if(!userSnap.exists()){
       msg.textContent="Kullanıcı bulunamadı!";
@@ -262,24 +198,36 @@ async function loginUser(username, password, role){
     }
 
     sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
+sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
 
-    if(role === "security"){
-      if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("securityUser");
+if(role === "security"){
+  if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
+  else localStorage.removeItem("securityUser");
 
-      if(user.type === "company") window.location.href = "sirket.html";
-      else if(user.type === "security") window.location.href = "guvenlik.html";
-      else if(user.type === "admin") window.location.href = "yetkili.html";
-      else msg.textContent="Yetki hatalı!";
-    }
+  if(user.type === "company"){
+    window.location.href = "sirket.html";
+  } else if(user.type === "security"){
+    window.location.href = "guvenlik.html";
+  } else if(user.type === "admin"){
+    window.location.href = "yetkili.html";
+  } else {
+    msg.textContent="Yetki hatalı!";
+  }
+}
 
-    if(role === "resident"){
-      if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
-      else localStorage.removeItem("residentUser");
+// --- Resident yönlendirmesi ayrı blok ---
+if(role === "resident"){
+  if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
+  else localStorage.removeItem("residentUser");
 
-      if(user.type === "resident") window.location.href = "site.html";
-      else msg.textContent="Yetki hatalı!";
-    }
+  if(user.type === "resident"){
+    window.location.href = "site.html";
+  } else {
+    msg.textContent="Yetki hatalı!";
+  }
+}
+
+
 
   } catch(err){
     console.error(err);
@@ -288,10 +236,18 @@ async function loginUser(username, password, role){
 }
 
 // Login butonları
-document.getElementById("secLoginBtn").addEventListener("click", ()=>{ loginUser(secUsername.value, secPassword.value, "security"); });
-document.getElementById("resLoginBtn").addEventListener("click", ()=>{ loginUser(resUsername.value, resPassword.value, "resident"); });
-adminLoginBtn.addEventListener("click", ()=>{ loginUser(adminUsername.value, adminPassword.value, "admin"); });
+document.getElementById("secLoginBtn").addEventListener("click", ()=>{
+  loginUser(secUsername.value, secPassword.value, "security");
+});
+document.getElementById("resLoginBtn").addEventListener("click", ()=>{
+  loginUser(resUsername.value, resPassword.value, "resident");
+});
+// Admin login normal
+adminLoginBtn.addEventListener("click", ()=>{
+  loginUser(adminUsername.value, adminPassword.value, "admin");
+});
 </script>
 
 </body>
 </html>
+
