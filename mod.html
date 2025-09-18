@@ -54,7 +54,9 @@ header button {background:#e67e22; color:#fff;}
   <option value="resident">SITE SAKİNİ</option>
   <option value="security">GÜVENLİK</option>
   <option value="admin">ADMIN</option>
+  <option value="company">ŞİRKET</option> <!-- Yeni seçenek -->
 </select>
+
 
 <div id="residentFields">
   <select id="newBlock">
@@ -119,6 +121,19 @@ header button {background:#e67e22; color:#fff;}
 
 <div class="panel" style="grid-column: span 2;">
 <h2>TÜM KULLANICILAR</h2>
+<div id="userSummary" style="
+  margin:15px; 
+  padding:10px; 
+  background:#2c3e50;  /* koyu mavi */
+  color:#ffcc00;        /* sarı yazı */
+  border-radius:8px; 
+  font-weight:600;
+  font-size:16px;
+">
+  Yükleniyor...
+</div>
+
+
 <select id="userFilter" style="margin-bottom:10px;">
 <option value="all">TÜMÜ</option>
 <option value="security">GÜVENLİK</option>
@@ -180,27 +195,44 @@ document.getElementById('logoutBtn').addEventListener('click', ()=> {sessionStor
 document.getElementById('devriyeBtn').addEventListener('click', () => {window.location.href = 'devriye.html';});
 
 // ✅ NOKTA EKLE Butonuna tıklama
-document.getElementById('noktaBtn').addEventListener('click', () => {window.location.href = 'nokta.html';});
+document.getElementById('noktaBtn').addEventListener('click', () => {
+  window.location.href = 'nokta.html';
+});
 
 const usersTable = document.getElementById('usersTable');
 let allUsers = {};
 
-function mapType(type){ if(type==="resident") return "SITE SAKİNİ"; if(type==="security") return "GÜVENLİK"; if(type==="admin") return "ADMIN"; return type; }
+function mapType(type) {
+  if (type === "resident") return "SITE SAKİNİ";
+  if (type === "security") return "GÜVENLİK";
+  if (type === "admin") return "ADMIN";
+  return type;
+}
 
-function listUsers(filter="all"){
+// Kullanıcıları listele ve özet alanını güncelle
+function listUsers(filter="all") {
   const usersRef = ref(db,'users');
-  onValue(usersRef,snapshot=>{
+  onValue(usersRef, snapshot => {
     const val = snapshot.val() || {};
     allUsers = val;
-    usersTable.innerHTML="";
+    usersTable.innerHTML = "";
+
+    // 🔥 Sayaçları tanımla
+    let sakiniCount = 0, guvenlikCount = 0, amirCount = 0;
+
     Object.values(val)
-      .filter(u => filter==="all" || u.type===filter)
-      .sort((a,b)=>{
+      .filter(u => filter === "all" || u.type === filter)
+      .sort((a,b) => {
         const numA = parseInt((a.username||"").replace(/\D/g,'')||0);
         const numB = parseInt((b.username||"").replace(/\D/g,'')||0);
         return numA - numB;
       })
-      .forEach(u=>{
+      .forEach(u => {
+        // 🔥 Sayaçları artır
+        if(u.type === "resident") sakiniCount++;
+        else if(u.type === "security") guvenlikCount++;
+        else if(u.type === "admin") amirCount++;
+
         const tr = document.createElement('tr');
         const displayBlockSite = u.block ? u.block : (u.siteName ? u.siteName : "");
         tr.innerHTML = `<td>${u.username}</td>
@@ -214,13 +246,24 @@ function listUsers(filter="all"){
                         </td>`;
         usersTable.appendChild(tr);
       });
-    attachRowEvents();
+
+    // 🔥 Özet alanını güncelle
+    const summaryEl = document.getElementById('userSummary');
+    if(summaryEl){
+      summaryEl.innerHTML = `👤 Site Sakinleri: ${sakiniCount} &nbsp; | &nbsp; 🛡️ Güvenlik: ${guvenlikCount} &nbsp; | &nbsp; ⭐ Amir: ${amirCount}`;
+    }
+
+    // Satır eventlerini tekrar bağla
+    if(typeof attachRowEvents === 'function') attachRowEvents();
   });
 }
 
+// Satır eventleri (Düzenle ve Sil)
 function attachRowEvents(){
   document.querySelectorAll('.delete').forEach(btn=>{
-    btn.onclick = async () => { if(confirm('Kullanıcı silinsin mi?')) await remove(ref(db,'users/'+btn.dataset.username)); }
+    btn.onclick = async () => { 
+      if(confirm('Kullanıcı silinsin mi?')) await remove(ref(db,'users/'+btn.dataset.username));
+    }
   });
   document.querySelectorAll('.edit').forEach(btn=>{
     btn.onclick = () => {
@@ -233,64 +276,114 @@ function attachRowEvents(){
   });
 }
 
+// Listeyi başlat
 listUsers();
-document.getElementById('userFilter').addEventListener('change', e=> { listUsers(e.target.value); });
+document.getElementById('userFilter').addEventListener('change', e => { listUsers(e.target.value); });
 
 // Dinamik alan göster
 const newType = document.getElementById('newType');
 const residentFields = document.getElementById('residentFields');
 const otherFields = document.getElementById('otherFields');
-function toggleFields(){ if(newType.value==="resident"){residentFields.style.display="block"; otherFields.style.display="none";} else {residentFields.style.display="none"; otherFields.style.display="block";} }
+function toggleFields(){
+  if(newType.value === "resident"){
+    residentFields.style.display = "block"; 
+    otherFields.style.display = "none";
+  } else { // admin, security ve company için
+    residentFields.style.display = "none"; 
+    otherFields.style.display = "block";
+  }
+}
+
 newType.addEventListener('change', toggleFields);
 toggleFields();
 
 // Tüm inputları büyük harfe çevir
-document.querySelectorAll('input').forEach(inp=>{ inp.addEventListener('input', ()=>{ inp.value = inp.value.toUpperCase(); }) });
+document.querySelectorAll('input').forEach(inp=>{
+  inp.addEventListener('input', ()=>{ inp.value = inp.value.toUpperCase(); });
+});
 
 // Yeni kullanıcı oluştur
 document.getElementById('createUserBtn').addEventListener('click', async ()=>{
   const type = newType.value;
   let username, password, phone, block, siteName;
 
-  if(type==="resident"){
+ if(type==="resident"){
     block = document.getElementById('newBlock').value.trim().toUpperCase();
     siteName = document.getElementById('newSite').value.trim().toUpperCase();
     username = document.getElementById('newApartment').value.trim().toUpperCase();
-    password = username; // Şifre kullanıcı adıyla aynı
+    password = username;
     phone = document.getElementById('newPhone').value.trim();
-  } else {
+} else if(type==="admin" || type==="company" || type==="security"){
     username = document.getElementById('newUsername').value.trim().toUpperCase();
-    password = username; // Şifre kullanıcı adıyla aynı
+    password = username;
     phone = document.getElementById('newPhoneOther').value.trim();
-    block = ""; siteName="";
-  }
+    block = "";
+    siteName = "";
+}
 
-  if(!username){ alert("Kullanıcı adı boş olamaz!"); return; }
+
+  if(!username){ 
+    alert("Kullanıcı adı boş olamaz!"); 
+    return; 
+  }
 
   await set(ref(db,'users/'+username), {username, password, type, block:block||"", siteName:siteName||"", phone});
   alert("Kullanıcı oluşturuldu!");
-  document.getElementById('newApartment').value=""; document.getElementById('newSite').value=""; document.getElementById('newBlock').selectedIndex=0;
-  document.getElementById('newUsername').value=""; document.getElementById('newPhone').value=""; document.getElementById('newPhoneOther').value="";
+
+  // Inputları temizle
+  document.getElementById('newApartment').value = "";
+  document.getElementById('newSite').value = "";
+  document.getElementById('newBlock').selectedIndex = 0;
+  document.getElementById('newUsername').value = "";
+  document.getElementById('newPhone').value = "";
+  document.getElementById('newPhoneOther').value = "";
+
+  // Listeyi güncelle
+  listUsers();
 });
 
 // Toplu ekleme
-async function addBulkUsers(count){
+async function addBulkUsers(count) {
   const block = document.getElementById('bulkBlock').value.trim().toUpperCase();
   const siteName = document.getElementById('bulkSite').value.trim().toUpperCase();
-  const snapshot = await get(ref(db,'users'));
+
+  const snapshot = await get(ref(db, 'users'));
   const val = snapshot.val() || {};
+
+  // ✅ Sadece seçilen blok veya siteye ait kullanıcıları al
   const existingNums = Object.values(val)
-    .filter(u=> (u.block === block || u.siteName === siteName))
-    .map(u=>{
-      const match = u.username.match(/\d+$/); return match ? parseInt(match[0]) : 0;
+    .filter(u => {
+      if (block && siteName) return u.block === block && u.siteName === siteName;
+      if (block) return u.block === block;
+      if (siteName) return u.siteName === siteName;
+      return false;
+    })
+    .map(u => {
+      const match = u.username.match(/\d+$/);
+      return match ? parseInt(match[0]) : 0;
     });
-  let start = existingNums.length>0 ? Math.max(...existingNums)+1 : 1;
-  for(let i=start;i<start+count;i++){
-    let username = siteName ? (block ? siteName+block+i : siteName+i) : (block ? block+i : "USER"+i);
+
+  // ✅ Eğer hiç yoksa 1’den başla, varsa en büyük numaradan devam et
+  let start = existingNums.length > 0 ? Math.max(...existingNums) + 1 : 1;
+
+  for (let i = start; i < start + count; i++) {
+    let username = siteName 
+      ? (block ? siteName + block + i : siteName + i) 
+      : (block ? block + i : "USER" + i);
+
     username = username.toUpperCase();
-    await set(ref(db,'users/'+username), {username, password: username, type:'resident', block:block||"", siteName:siteName||"", phone:''});
+
+    await set(ref(db, 'users/' + username), {
+      username,
+      password: username,
+      type: 'resident',
+      block: block || "",
+      siteName: siteName || "",
+      phone: ''
+    });
   }
 }
+
 document.querySelectorAll('.bulkBtn').forEach(btn=>{
   btn.addEventListener('click', async ()=> {
     const count = parseInt(btn.dataset.count);
