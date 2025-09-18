@@ -206,8 +206,6 @@ body, div, span, p, h1, h2, h3, h4, h5, h6, label, input, button {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, set, update, get } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
-
-/* === Firebase === */
 const firebaseConfig = {
   apiKey: "AIzaSyAUjb4CBSZxjCTxpx8S_rGLOLDeRtDTs7U",
   authDomain: "bencga-db51b.firebaseapp.com",
@@ -218,6 +216,9 @@ const firebaseConfig = {
   appId: "1:568702678520:web:82d3c6a98216990fa3d20d",
   measurementId: "G-703BGXWTFN"
 };
+
+/* === Firebase === */
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
