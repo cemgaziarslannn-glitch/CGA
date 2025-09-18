@@ -399,18 +399,18 @@ let readPoints = [];
 let allDevriyeHistory = [];
 
 // 2️⃣ Devriye durumunu dinleme
-onValue(activeDevriyeRef, snapshot => {
+onValue(activeDevriyeRef, async snapshot => {
     const val = snapshot.val();
     if(val){
-        devriyeStarted = true;
-        devriyeStartTime = new Date(val.startTime);
-        readPoints = val.readPoints || [];
-        devriyeEndBtn.disabled = false;
-
-        startDevriyeTimer();
-        updateQRButtons(); // Bu sayede sayfa yenilenince QR kodlar yeşil olur
+       devriyeStarted = true;
+       devriyeStartTime = new Date();
+       devriyeEndBtn.disabled = false;
+       readPoints = [];
+       await set(activeDevriyeRef, { startTime: devriyeStartTime.toISOString() });
     }
 });
+
+
 function updateQRButtons(){
   document.querySelectorAll('.qrBtn').forEach(btn=>{
     if(readPoints.includes(btn.dataset.point)){
@@ -692,13 +692,19 @@ async function startScanner(pointName, btnEl){
     { fps:10, qrbox:250 },
     qrCodeMessage => {
       const qrId = qrCodeMessage.trim();
-      if(qrId === btnEl.dataset.qrid){
-        btnEl.classList.add('read');
-        btnEl.nextElementSibling.innerText='Tamamlandı';
-        if(!readPoints.includes(pointName)) readPoints.push(pointName);
-        qrScanner.stop();
-        qrModal.style.display='none';
-      } else {
+   if(qrId === btnEl.dataset.qrid){
+    btnEl.classList.add('read');
+    btnEl.nextElementSibling.innerText='Tamamlandı';
+    if(!readPoints.includes(pointName)) {
+        readPoints.push(pointName);
+        // 🔹 Firebase'e sadece okutulan noktayı kaydet
+        update(activeDevriyeRef, { readPoints: readPoints });
+    }
+    qrScanner.stop();
+    qrModal.style.display='none';
+}
+
+	  else {
         alert("QR kod eşleşmedi!");
       }
     },
