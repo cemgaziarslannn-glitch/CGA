@@ -112,10 +112,11 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-if(!currentUser || currentUser.type !== 'admin') { 
-  alert("Sadece admin kullanıcı giriş yapabilir!"); 
+if(!currentUser || (currentUser.type !== 'admin' && currentUser.type !== 'company')) { 
+  alert("Sadece admin veya company kullanıcı giriş yapabilir!"); 
   window.location.href = "index.html";
 }
+
 const eventsContainer = document.getElementById('eventsContainer');
 const message = document.getElementById('message');
 const filterType = document.getElementById('filterType');
@@ -137,7 +138,14 @@ let allEvents = [];
 let selectedEventToDelete = null;
 
 // Çıkış butonu
-logoutBtn.addEventListener('click', ()=> window.location.href="yetkili.html");
+logoutBtn.addEventListener('click', () => {
+    if(currentUser.type === 'company'){
+        window.location.href = "sirket.html";
+    } else {
+        window.location.href = "yetkili.html";
+    }
+});
+
 
 // Türkçe karakter düzeltme
 function fixTurkishChars(str){
