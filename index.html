@@ -33,11 +33,12 @@
   @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
   /* Ana ekrana ekle butonu */
-  #installBtn { position: fixed; top: 10px; right: 10px; padding:10px 15px; background:#27ae60; color:white; border:none; border-radius:12px; cursor:pointer; display:none; z-index:999; font-weight:600; }
+  #installBtn { position: fixed; top:10px; right:10px; padding:10px 15px; background:#27ae60; color:white; border:none; border-radius:12px; cursor:pointer; z-index:999; font-weight:600; display:none; }
 </style>
 </head>
 <body>
 
+<!-- Sağ üst köşe Ana Ekrana Ekle Butonu -->
 <button id="installBtn">📲 Ana Ekrana Ekle</button>
 
 <div class="container">
@@ -102,32 +103,24 @@ const db = getDatabase(app);
 // === PWA Install Button ===
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
+
 window.addEventListener("beforeinstallprompt", (e)=>{
   e.preventDefault();
   deferredPrompt = e;
   installBtn.style.display="block";
 });
+
 installBtn.addEventListener("click", async ()=>{
   if(deferredPrompt){
     deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
+    console.log("Kullanıcı seçimi:", choice.outcome);
     deferredPrompt = null;
     installBtn.style.display="none";
+  } else {
+    alert("Safari: Paylaş → Ana Ekrana Ekle\nAndroid Chrome: Menü → Ana Ekrana Ekle");
   }
 });
-
-// iOS kullanıcıları için talimat
-function isIos() {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent);
-}
-function isInStandaloneMode() {
-  return ('standalone' in window.navigator) && (window.navigator.standalone);
-}
-if(isIos() && !isInStandaloneMode()){
-  installBtn.style.display="block";
-  installBtn.textContent="📲 Paylaş → Ana Ekrana Ekle";
-}
 
 // === Service Worker kaydı ===
 if("serviceWorker" in navigator){
@@ -157,52 +150,117 @@ const adminPassword = document.getElementById("adminPassword");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const closeAdminBtn = document.getElementById("closeAdminBtn");
 
-securityBtn.addEventListener("click", ()=>{ securityBtn.classList.add("active"); residentBtn.classList.remove("active"); securityGroup.classList.add("active"); residentGroup.classList.remove("active"); msg.textContent=""; });
-residentBtn.addEventListener("click", ()=>{ residentBtn.classList.add("active"); securityBtn.classList.remove("active"); residentGroup.classList.add("active"); securityGroup.classList.remove("active"); msg.textContent=""; });
+// Sekme geçişleri
+securityBtn.addEventListener("click", ()=>{
+  securityBtn.classList.add("active");
+  residentBtn.classList.remove("active");
+  securityGroup.classList.add("active");
+  residentGroup.classList.remove("active");
+  msg.textContent="";
+});
+residentBtn.addEventListener("click", ()=>{
+  residentBtn.classList.add("active");
+  securityBtn.classList.remove("active");
+  residentGroup.classList.add("active");
+  securityGroup.classList.remove("active");
+  msg.textContent="";
+});
 
+// 10 tık ile admin modal aç
 let cgaClickCount=0;
-cgaTitle.addEventListener("click", ()=>{ cgaClickCount++; if(cgaClickCount>=10){ adminModal.style.display="flex"; cgaClickCount=0; }});
+cgaTitle.addEventListener("click", ()=>{
+  cgaClickCount++;
+  if(cgaClickCount>=10){
+    adminModal.style.display="flex";
+    cgaClickCount=0;
+  }
+});
 closeAdminBtn.addEventListener("click", ()=>adminModal.style.display="none");
 
+// Sayfa yüklenince hatırlanan kullanıcıları doldur
 window.addEventListener("load", ()=>{
   residentBtn.click();
   const secStored = JSON.parse(localStorage.getItem("securityUser"));
-  if(secStored){ secUsername.value = secStored.username; secPassword.value = secStored.password; secRemember.checked = true; }
+  if(secStored){
+    secUsername.value = secStored.username;
+    secPassword.value = secStored.password;
+    secRemember.checked = true;
+  }
   const resStored = JSON.parse(localStorage.getItem("residentUser"));
-  if(resStored){ resUsername.value = resStored.username; resPassword.value = resStored.password; resRemember.checked = true; }
+  if(resStored){
+    resUsername.value = resStored.username;
+    resPassword.value = resStored.password;
+    resRemember.checked = true;
+  }
 });
 
+// **Güvenlik ve Site Sakini inputlarını otomatik büyük harfe çevir**
 [secUsername, secPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
 [resUsername, resPassword].forEach(el=>{ el.addEventListener("input", ()=>{ el.value = el.value.toUpperCase(); }); });
 
+// Login fonksiyonu
 async function loginUser(username, password, role){
-  username=username.trim(); password=password.trim(); msg.textContent="";
-  if(!username || !password){ msg.textContent="Kullanıcı adı ve şifre gerekli!"; return; }
+  username = username.trim();
+  password = password.trim();
+  msg.textContent="";
 
-  try{
+  if(!username || !password){
+    msg.textContent="Kullanıcı adı ve şifre gerekli!";
+    return;
+  }
+
+  try {
     const adminSnap = await get(child(ref(db), 'admin'));
-    if(adminSnap.exists()){ const adminUser=adminSnap.val(); if(username===adminUser.username && password===adminUser.password){ sessionStorage.setItem("currentUser", JSON.stringify({username,type:"admin"})); window.location.href="mod.html"; return; } }
-    const userSnap = await get(child(ref(db), 'users/'+username));
-    if(!userSnap.exists()){ msg.textContent="Kullanıcı bulunamadı!"; return; }
-    const user=userSnap.val(); if(user.password!==password){ msg.textContent="Şifre hatalı!"; return; }
+    if(adminSnap.exists()){
+      const adminUser = adminSnap.val();
+      if(username === adminUser.username && password === adminUser.password){
+        sessionStorage.setItem("currentUser", JSON.stringify({username, type:"admin"}));
+        window.location.href = "mod.html";
+        return;
+      }
+    }
+
+    const userSnap = await get(child(ref(db), 'users/' + username));
+    if(!userSnap.exists()){
+      msg.textContent="Kullanıcı bulunamadı!";
+      return;
+    }
+    const user = userSnap.val();
+    if(user.password !== password){
+      msg.textContent="Şifre hatalı!";
+      return;
+    }
+
     sessionStorage.setItem("currentUser", JSON.stringify({username:user.username,type:user.type}));
 
-    if(role==="security"){
-      if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password})); else localStorage.removeItem("securityUser");
-      if(user.type==="company"){ window.location.href="sirket.html"; } else if(user.type==="security"){ window.location.href="guvenlik.html"; } else if(user.type==="admin"){ window.location.href="yetkili.html"; } else{ msg.textContent="Yetki hatalı!"; }
-    }
-    if(role==="resident"){
-      if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password})); else localStorage.removeItem("residentUser");
-      if(user.type==="resident"){ window.location.href="site.html"; } else{ msg.textContent="Yetki hatalı!"; }
+    if(role === "security"){
+      if(secRemember.checked) localStorage.setItem("securityUser", JSON.stringify({username,password}));
+      else localStorage.removeItem("securityUser");
+
+      if(user.type === "company") window.location.href = "sirket.html";
+      else if(user.type === "security") window.location.href = "guvenlik.html";
+      else if(user.type === "admin") window.location.href = "yetkili.html";
+      else msg.textContent="Yetki hatalı!";
     }
 
-  } catch(err){ console.error(err); msg.textContent="Bağlantı hatası!"; }
+    if(role === "resident"){
+      if(resRemember.checked) localStorage.setItem("residentUser", JSON.stringify({username,password}));
+      else localStorage.removeItem("residentUser");
+
+      if(user.type === "resident") window.location.href = "site.html";
+      else msg.textContent="Yetki hatalı!";
+    }
+
+  } catch(err){
+    console.error(err);
+    msg.textContent="Bağlantı hatası!";
+  }
 }
 
+// Login butonları
 document.getElementById("secLoginBtn").addEventListener("click", ()=>{ loginUser(secUsername.value, secPassword.value, "security"); });
 document.getElementById("resLoginBtn").addEventListener("click", ()=>{ loginUser(resUsername.value, resPassword.value, "resident"); });
 adminLoginBtn.addEventListener("click", ()=>{ loginUser(adminUsername.value, adminPassword.value, "admin"); });
-
 </script>
 
 </body>
